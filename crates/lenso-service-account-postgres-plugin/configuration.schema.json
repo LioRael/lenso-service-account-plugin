@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "database_url_secret",
+    "credential_pepper_secret",
+    "receipt_encryption_key_secret",
+    "directory_provider",
+    "auth_issuer",
+    "auth_public_key",
+    "management_callers",
+    "authentication_callers",
+    "token_audience",
+    "credential_ttl_seconds",
+    "rotation_overlap_seconds",
+    "token_ttl_seconds",
+    "receipt_ttl_seconds",
+    "exchange_window_seconds",
+    "max_exchanges_per_window",
+    "exchange_lockout_seconds",
+    "max_page_size",
+    "max_accounts_per_organization"
+  ],
+  "properties": {
+    "schema": { "type": "string", "minLength": 1, "maxLength": 63 },
+    "database_url_secret": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "credential_pepper_secret": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "receipt_encryption_key_secret": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "directory_provider": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "auth_issuer": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "auth_public_key": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "management_callers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    },
+    "authentication_callers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    },
+    "token_audience": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+    },
+    "credential_ttl_seconds": { "type": "integer", "minimum": 300, "maximum": 31536000 },
+    "rotation_overlap_seconds": { "type": "integer", "minimum": 0, "maximum": 3600 },
+    "token_ttl_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 },
+    "receipt_ttl_seconds": { "type": "integer", "minimum": 300, "maximum": 604800 },
+    "exchange_window_seconds": { "type": "integer", "minimum": 1, "maximum": 3600 },
+    "max_exchanges_per_window": { "type": "integer", "minimum": 1, "maximum": 10000 },
+    "exchange_lockout_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 },
+    "max_page_size": { "type": "integer", "minimum": 1, "maximum": 200 },
+    "max_accounts_per_organization": { "type": "integer", "minimum": 1, "maximum": 10000 }
+  }
+}

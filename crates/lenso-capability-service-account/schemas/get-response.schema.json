@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["account"],
+  "properties": {
+    "account": {
+      "$ref": "#/$defs/ServiceAccountSummary"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Nullable_string": {
+      "type": ["string", "null"]
+    },
+    "ServiceAccountStatus": {
+      "enum": ["active", "revoked"]
+    },
+    "ServiceAccountSummary": {
+      "type": "object",
+      "required": [
+        "service_account_id",
+        "organization_id",
+        "subject",
+        "name",
+        "status",
+        "revision",
+        "created_at",
+        "rotated_at",
+        "revoked_at",
+        "credential_expires_at"
+      ],
+      "properties": {
+        "service_account_id": {
+          "type": "string"
+        },
+        "organization_id": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ServiceAccountStatus"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "rotated_at": {
+          "format": "date-time",
+          "$ref": "#/$defs/Nullable_string"
+        },
+        "revoked_at": {
+          "format": "date-time",
+          "$ref": "#/$defs/Nullable_string"
+        },
+        "credential_expires_at": {
+          "format": "date-time",
+          "$ref": "#/$defs/Nullable_string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "title": "GetServiceAccountResponse"
+}

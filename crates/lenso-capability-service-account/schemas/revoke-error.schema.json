@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    { "const": "forbidden" },
+    { "const": "invalid_request" },
+    { "const": "organization_not_found" },
+    { "const": "membership_required" },
+    { "const": "access_denied" },
+    { "const": "not_found" },
+    { "const": "revision_conflict" },
+    { "const": "idempotency_conflict" },
+    { "const": "operation_in_progress" }
+  ]
+}
