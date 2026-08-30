@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["organization_id", "after", "limit"],
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "after": {
+      "$ref": "#/$defs/Nullable_string"
+    },
+    "limit": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Nullable_string": {
+      "type": ["string", "null"]
+    }
+  },
+  "title": "ListServiceAccountsRequest"
+}

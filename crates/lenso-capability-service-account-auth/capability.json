@@ -1,0 +1,15 @@
+{
+  "id": "lenso.auth.service-account@1",
+  "version": "1.0.0",
+  "portable": true,
+  "cross_lane_transfer": true,
+  "operations": [
+    {
+      "name": "exchange_secret",
+      "interaction": "request",
+      "request_schema": "schemas/exchange-secret-request.schema.json",
+      "response_schema": "schemas/exchange-secret-response.schema.json",
+      "domain_error_schema": "schemas/exchange-secret-error.schema.json"
+    }
+  ]
+}

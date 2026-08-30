@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "Keep credential and Lenso boundary upgrades reviewed",
+      "matchPackageNames": ["argon2", "aes-gcm", "sqlx", "/^lenso(?:-|$)/"],
+      "automerge": false,
+      "dependencyDashboardApproval": true
+    }
+  ]
+}

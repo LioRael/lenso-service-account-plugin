@@ -1,0 +1,43 @@
+{
+  "id": "lenso.service-account@1",
+  "version": "1.0.0",
+  "portable": true,
+  "cross_lane_transfer": true,
+  "operations": [
+    {
+      "name": "create",
+      "interaction": "request",
+      "request_schema": "schemas/create-request.schema.json",
+      "response_schema": "schemas/create-response.schema.json",
+      "domain_error_schema": "schemas/create-error.schema.json"
+    },
+    {
+      "name": "get",
+      "interaction": "request",
+      "request_schema": "schemas/get-request.schema.json",
+      "response_schema": "schemas/get-response.schema.json",
+      "domain_error_schema": "schemas/get-error.schema.json"
+    },
+    {
+      "name": "list",
+      "interaction": "request",
+      "request_schema": "schemas/list-request.schema.json",
+      "response_schema": "schemas/list-response.schema.json",
+      "domain_error_schema": "schemas/list-error.schema.json"
+    },
+    {
+      "name": "rotate_secret",
+      "interaction": "request",
+      "request_schema": "schemas/rotate-secret-request.schema.json",
+      "response_schema": "schemas/rotate-secret-response.schema.json",
+      "domain_error_schema": "schemas/rotate-secret-error.schema.json"
+    },
+    {
+      "name": "revoke",
+      "interaction": "request",
+      "request_schema": "schemas/revoke-request.schema.json",
+      "response_schema": "schemas/revoke-response.schema.json",
+      "domain_error_schema": "schemas/revoke-error.schema.json"
+    }
+  ]
+}
