@@ -844,7 +844,7 @@ dependencies = [
 [[package]]
 name = "lenso-capability-access-control"
 version = "0.1.0"
-source = "git+https://github.com/LioRael/lenso-access-control-plugin?rev=0c36e0f10648e8f706212c5b289678e1a204c1ee#0c36e0f10648e8f706212c5b289678e1a204c1ee"
+source = "git+https://github.com/LioRael/lenso-access-control-plugin?rev=de1e1f1ec61232b13fc90a05f1cb4e3fc96ba420#de1e1f1ec61232b13fc90a05f1cb4e3fc96ba420"
 dependencies = [
  "futures",
  "lenso-contract-codegen",
@@ -906,7 +906,7 @@ dependencies = [
 [[package]]
 name = "lenso-capability-organization-membership"
 version = "0.1.0"
-source = "git+https://github.com/LioRael/lenso-organization-plugin?rev=e8f869d7a696e5f55b3b9608c3359af969ae2499#e8f869d7a696e5f55b3b9608c3359af969ae2499"
+source = "git+https://github.com/LioRael/lenso-organization-plugin?rev=9572afd465ba2f952b646ec16935c0274f66c82a#9572afd465ba2f952b646ec16935c0274f66c82a"
 dependencies = [
  "futures",
  "lenso-contract-codegen",
@@ -1045,7 +1045,7 @@ source = "git+https://github.com/LioRael/lenso-protocols?rev=9769bc5dc828fd9111d
 [[package]]
 name = "lenso-postgres-kit"
 version = "0.1.0"
-source = "git+https://github.com/LioRael/lenso-postgres-kit?rev=525c1012c789e6f54c3c2fdaf8507a626c93e65f#525c1012c789e6f54c3c2fdaf8507a626c93e65f"
+source = "git+https://github.com/LioRael/lenso-postgres-kit?rev=97ff73638d1fca098034c443539d44d95062eea4#97ff73638d1fca098034c443539d44d95062eea4"
 dependencies = [
  "hex",
  "sha2 0.11.0",
@@ -2386,7 +2386,3 @@ name = "zmij"
 version = "1.0.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b"
-
-[[patch.unused]]
-name = "lenso-capability-access-control"
-version = "0.1.0"

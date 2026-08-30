@@ -49,7 +49,7 @@ if [[ -z "$access_control_source" ]]; then
   git clone --quiet --filter=blob:none --no-checkout \
     https://github.com/LioRael/lenso-access-control-plugin "$access_control_checkout"
   git -C "$access_control_checkout" checkout --quiet --detach \
-    0c36e0f10648e8f706212c5b289678e1a204c1ee
+    de1e1f1ec61232b13fc90a05f1cb4e3fc96ba420
   access_control_source="$access_control_checkout/crates/lenso-capability-access-control"
 fi
 access_control_root="$(git -C "$access_control_source" rev-parse --show-toplevel)"
