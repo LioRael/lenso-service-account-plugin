@@ -70,13 +70,13 @@ access_control_source_patch="patch.crates-io.lenso-capability-access-control.pat
 
 # Cargo must resolve both unpublished local Capabilities and the not-yet-published
 # Access Control Capability while creating the Plugin archive. This bootstrap
-# archive step is offline and intentionally regenerates only the archive-local
-# lockfile; the normalized consumer graph is fully checked, tested, and linted below.
+# step intentionally regenerates only the archive-local lockfile; the normalized
+# consumer graph is fully checked, tested, and linted below.
 "$cargo_bin" \
   --config "$management_source_patch" \
   --config "$authentication_source_patch" \
   --config "$access_control_source_patch" \
-  package --quiet --offline "${plugin_package_flags[@]}" --no-verify \
+  package --quiet "${plugin_package_flags[@]}" --no-verify \
   -p lenso-service-account-postgres-plugin
 
 management_archive="$target_directory/package/lenso-capability-service-account-$management_version.crate"
