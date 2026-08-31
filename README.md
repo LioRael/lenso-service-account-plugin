@@ -80,16 +80,15 @@ Directory workflow exists.
 ## Local validation
 
 ```sh
-/Users/leosouthey/Projects/framework/.lenso-tools/bin/lenso-cargo fmt --all -- --check
-/Users/leosouthey/Projects/framework/.lenso-tools/bin/lenso-cargo check --locked --workspace --all-targets
-/Users/leosouthey/Projects/framework/.lenso-tools/bin/lenso-cargo test --locked --workspace --all-targets
-/Users/leosouthey/Projects/framework/.lenso-tools/bin/lenso-cargo clippy --locked --workspace --all-targets -- -D warnings
+cargo fmt --all -- --check
+cargo check --locked --workspace --all-targets
+cargo test --locked --workspace --all-targets
+cargo clippy --locked --workspace --all-targets -- -D warnings
 lenso-contract-codegen check crates/lenso-capability-service-account/capability.json \
   --rust crates/lenso-capability-service-account/src/generated.rs
 lenso-contract-codegen check crates/lenso-capability-service-account-auth/capability.json \
   --rust crates/lenso-capability-service-account-auth/src/generated.rs
 LENSO_PACKAGE_ALLOW_DIRTY=1 \
-  LENSO_CARGO_BIN=/Users/leosouthey/Projects/framework/.lenso-tools/bin/lenso-cargo \
   ./scripts/check-public-packages.sh
 ./scripts/check-repository-boundary.sh
 ```
@@ -101,7 +100,7 @@ behavior:
 
 ```sh
 LENSO_TEST_POSTGRES_ADMIN_URL=postgres://.../postgres \
-  /Users/leosouthey/Projects/framework/.lenso-tools/bin/lenso-cargo test \
+  cargo test \
   -p lenso-service-account-postgres-plugin \
   restart_concurrency_and_secret_once_acceptance -- --ignored
 ```
