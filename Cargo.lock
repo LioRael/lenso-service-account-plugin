@@ -959,7 +959,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-capability-service-account"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures",
  "lenso-contract-authoring",
@@ -974,7 +974,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-capability-service-account-auth"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures",
  "lenso-contract-authoring",
@@ -1107,7 +1107,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-service-account-postgres-plugin"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aes-gcm",
  "argon2",
@@ -2470,7 +2470,3 @@ name = "zmij"
 version = "1.0.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b"
-
-[[patch.unused]]
-name = "lenso-capability-access-control"
-version = "0.1.0"

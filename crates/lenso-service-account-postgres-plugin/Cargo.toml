@@ -1,6 +1,6 @@
 [package]
 name = "lenso-service-account-postgres-plugin"
-version = "0.1.0"
+version = "0.1.1"
 edition.workspace = true
 license.workspace = true
 publish = true
@@ -23,8 +23,8 @@ lenso-capability-credential-issuer.workspace = true
 lenso-capability-identity-directory.workspace = true
 lenso-capability-organization-membership.workspace = true
 lenso-capability-secrets.workspace = true
-lenso-capability-service-account = { path = "../lenso-capability-service-account", version = "0.1.0" }
-lenso-capability-service-account-auth = { path = "../lenso-capability-service-account-auth", version = "0.1.0" }
+lenso-capability-service-account = { path = "../lenso-capability-service-account", version = "0.1.1" }
+lenso-capability-service-account-auth = { path = "../lenso-capability-service-account-auth", version = "0.1.1" }
 lenso-kernel.workspace = true
 lenso-native-adapter.workspace = true
 lenso-postgres-kit.workspace = true
