@@ -34,11 +34,7 @@ jobs:
       - run: cargo test --locked --workspace --all-targets
       - run: cargo clippy --locked --workspace --all-targets -- -D warnings
       - name: Install exact contract projection checker
-        run: >-
-          cargo install --locked
-          --git https://github.com/LioRael/lenso-protocols
-          --rev 9769bc5dc828fd9111da6d28a4ecd5f1bb198ab4
-          lenso-contract-codegen
+        run: cargo install --locked --version '=0.6.5' lenso-contract-codegen
       - name: Verify exact Capability projections
         run: |
           lenso-contract-codegen check crates/lenso-capability-service-account/capability.json \
