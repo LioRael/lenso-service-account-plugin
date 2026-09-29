@@ -19,7 +19,17 @@ trap cleanup EXIT
 macro_config="$verification_root/native-macro-candidate.toml"
 cat > "$macro_config" <<'TOML'
 [patch.crates-io]
-lenso-native-adapter-macros = { git = "https://github.com/LioRael/lenso", rev = "f707b9f045217d25647fa6c4f2c09500271998bc" }
+lenso = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso-app-plan = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso-kernel = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso-native-adapter = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso-native-adapter-macros = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso-plugin-authoring = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso-runtime-codec = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso-contract-runtime = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso-contract-authoring = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso-contract-authoring-macros = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso-contract-codegen = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
 TOML
 cargo_with_runtime_patch() {
   "$cargo_bin" --config "$macro_config" "$@"

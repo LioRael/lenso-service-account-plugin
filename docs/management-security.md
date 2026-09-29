@@ -33,9 +33,9 @@ Preparation verifies the ledger; setup/upgrade remain explicit operator actions.
 Native PostgreSQL is qualified here. A complete Workers closure is required
 before admitting this optional Plugin there; Auth D1 support alone is insufficient.
 
-The current source candidate uses an exact native-macro Git patch for the
-same-role lowering fix (`f707b9f045217d25647fa6c4f2c09500271998bc`). Codegen stays
-at the released 0.10.0 and generated ABI remains unchanged. The public package
+The current source candidate pins the coherent Core Rust cohort, including
+native macros, to source revision `1dbc6b441ccc5571e2349ab4ae6e23a072a9093e`, which includes the same-role
+lowering fix. Codegen remains version 0.10.0 and generated ABI stays unchanged. The public package
 verification applies that same immutable patch to extracted crate archives;
-consuming App roots must select the paired patch until a released macro carries
-the fix. This is source qualification, not registry publication.
+consuming App roots must select that same Core revision for their Core source
+dependencies until a released macro carries the fix. This is source qualification, not registry publication.
