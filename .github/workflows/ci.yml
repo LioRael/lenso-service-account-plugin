@@ -1,9 +1,9 @@
 name: CI
 
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches: ['candidate/**']
+  workflow_dispatch:
 
 permissions: {}
 
@@ -34,7 +34,7 @@ jobs:
       - run: cargo test --locked --workspace --all-targets
       - run: cargo clippy --locked --workspace --all-targets -- -D warnings
       - name: Install exact contract projection checker
-        run: cargo install --locked --version '=0.6.5' lenso-contract-codegen
+        run: cargo install --locked --version '=0.10.0' lenso-contract-codegen
       - name: Verify exact Capability projections
         run: |
           lenso-contract-codegen check crates/lenso-capability-service-account/capability.json \

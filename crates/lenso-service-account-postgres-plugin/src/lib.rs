@@ -34,7 +34,9 @@ use crate::{
     schema::schema_plan,
 };
 
-pub use operator::{ServiceAccountOperator, ServiceAccountOperatorError};
+pub use operator::{
+    ServiceAccountCommandStatus, ServiceAccountOperator, ServiceAccountOperatorError,
+};
 
 const DEPENDENCY_TIMEOUT: StdDuration = StdDuration::from_secs(10);
 
@@ -137,9 +139,19 @@ impl ServiceAccountConfig {
             &self.auth_public_key,
         )
         .map_err(|_| ServiceAccountConfigError::InvalidAuthPublicKey)?;
-        validate_authority_set(&self.management_callers, 128)?;
-        validate_authority_set(&self.authentication_callers, 128)?;
-        validate_authority_set(&self.token_audience, 256)?;
+        validate_caller_set(&self.management_callers)?;
+        validate_caller_set(&self.authentication_callers)?;
+        if self.token_audience.is_empty()
+            || self.token_audience.len() > 64
+            || self
+                .token_audience
+                .iter()
+                .any(|value| !valid_audience(value))
+            || self.token_audience.iter().collect::<BTreeSet<_>>().len()
+                != self.token_audience.len()
+        {
+            return Err(ServiceAccountConfigError::InvalidAuthoritySet);
+        }
         if !(300..=31_536_000).contains(&self.credential_ttl_seconds)
             || self.rotation_overlap_seconds > 3_600
             || self.rotation_overlap_seconds >= self.credential_ttl_seconds
@@ -239,23 +251,11 @@ impl fmt::Debug for ServiceAccountPlugin {
     }
 }
 
-// Both roles are intentionally named `ServiceAccount`; separate modules keep the generated
-// native lowering support aliases scoped apart until codegen can disambiguate equal role names.
-mod management_provider {
-    #[allow(clippy::wildcard_imports)]
-    use super::*;
-
-    #[lenso::provides(management_capability::ServiceAccount)]
-    impl ServiceAccountPlugin {}
-}
-
-mod authentication_provider {
-    #[allow(clippy::wildcard_imports)]
-    use super::*;
-
-    #[lenso::provides(authentication_capability::ServiceAccount)]
-    impl ServiceAccountPlugin {}
-}
+#[lenso::provides(
+    management_capability::ServiceAccount,
+    authentication_capability::ServiceAccount
+)]
+impl ServiceAccountPlugin {}
 
 impl ServiceAccountPlugin {
     fn active(&self) -> Result<Rc<ActiveServiceAccount>, RuntimeFailure> {
@@ -441,15 +441,25 @@ fn valid_authority(value: &str, max: usize) -> bool {
             .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'_' | b'.' | b':'))
 }
 
-fn validate_authority_set(
-    values: &[String],
-    max_length: usize,
-) -> Result<(), ServiceAccountConfigError> {
+fn valid_caller(value: &str) -> bool {
+    let parts = value.split('/').collect::<Vec<_>>();
+    value.len() <= 128
+        && (1..=2).contains(&parts.len())
+        && parts.iter().all(|part| valid_authority(part, 128))
+}
+
+fn valid_audience(value: &str) -> bool {
+    !value.is_empty()
+        && value.len() <= 256
+        && value.bytes().all(|byte| {
+            byte.is_ascii_alphanumeric() || matches!(byte, b'.' | b'_' | b'-' | b':' | b'@')
+        })
+}
+
+fn validate_caller_set(values: &[String]) -> Result<(), ServiceAccountConfigError> {
     if values.is_empty()
         || values.len() > 64
-        || values
-            .iter()
-            .any(|value| !valid_authority(value, max_length))
+        || values.iter().any(|value| !valid_caller(value))
         || values.iter().collect::<BTreeSet<_>>().len() != values.len()
     {
         return Err(ServiceAccountConfigError::InvalidAuthoritySet);

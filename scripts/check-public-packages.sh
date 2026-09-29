@@ -16,6 +16,15 @@ cleanup() {
 }
 trap cleanup EXIT
 
+macro_config="$verification_root/native-macro-candidate.toml"
+cat > "$macro_config" <<'TOML'
+[patch.crates-io]
+lenso-native-adapter-macros = { git = "https://github.com/LioRael/lenso", rev = "f707b9f045217d25647fa6c4f2c09500271998bc" }
+TOML
+cargo_with_runtime_patch() {
+  "$cargo_bin" --config "$macro_config" "$@"
+}
+
 if [[ "${LENSO_PACKAGE_ALLOW_DIRTY:-0}" == "1" ]]; then
   package_flags+=(--allow-dirty)
   plugin_package_flags+=(--allow-dirty)
@@ -24,10 +33,10 @@ fi
 for capability in \
   lenso-capability-service-account \
   lenso-capability-service-account-auth; do
-  "$cargo_bin" package --quiet "${package_flags[@]}" -p "$capability"
+  cargo_with_runtime_patch package --quiet "${package_flags[@]}" -p "$capability"
 done
 
-metadata="$($cargo_bin metadata --no-deps --format-version=1)"
+metadata="$(cargo_with_runtime_patch metadata --no-deps --format-version=1)"
 target_directory="$(python3 -c \
   'import json, sys; print(json.load(sys.stdin)["target_directory"])' \
   <<<"$metadata")"
@@ -41,19 +50,24 @@ plugin_version="$(python3 -c \
   'import json, sys; name = sys.argv[1]; print(next(package["version"] for package in json.load(sys.stdin)["packages"] if package["name"] == name))' \
   lenso-service-account-postgres-plugin <<<"$metadata")"
 
-management_source="$repository_root/crates/lenso-capability-service-account"
-authentication_source="$repository_root/crates/lenso-capability-service-account-auth"
+bootstrap_source="$verification_root/bootstrap-source"
+bootstrap_target="$verification_root/bootstrap-target"
+mkdir "$bootstrap_source"
+cp "$repository_root/Cargo.toml" "$repository_root/Cargo.lock" "$bootstrap_source/"
+cp -R "$repository_root/crates" "$bootstrap_source/crates"
+management_source="$bootstrap_source/crates/lenso-capability-service-account"
+authentication_source="$bootstrap_source/crates/lenso-capability-service-account-auth"
 access_control_source="${LENSO_ACCESS_CONTROL_SOURCE:-}"
 if [[ -z "$access_control_source" ]]; then
   access_control_checkout="$verification_root/access-control"
   git clone --quiet --filter=blob:none --no-checkout \
     https://github.com/LioRael/lenso-access-control-plugin "$access_control_checkout"
   git -C "$access_control_checkout" checkout --quiet --detach \
-    de1e1f1ec61232b13fc90a05f1cb4e3fc96ba420
+    62ed6b9a100242e6932a46cb369b21f1c26ab765
   access_control_source="$access_control_checkout/crates/lenso-capability-access-control"
 fi
 access_control_root="$(git -C "$access_control_source" rev-parse --show-toplevel)"
-access_control_metadata="$($cargo_bin metadata --manifest-path "$access_control_root/Cargo.toml" --no-deps --format-version=1)"
+access_control_metadata="$(cargo_with_runtime_patch metadata --manifest-path "$access_control_root/Cargo.toml" --no-deps --format-version=1)"
 access_control_target="$(python3 -c \
   'import json, sys; print(json.load(sys.stdin)["target_directory"])' \
   <<<"$access_control_metadata")"
@@ -72,16 +86,17 @@ access_control_source_patch="patch.crates-io.lenso-capability-access-control.pat
 # Access Control Capability while creating the Plugin archive. This bootstrap
 # step intentionally regenerates only the archive-local lockfile; the normalized
 # consumer graph is fully checked, tested, and linted below.
-"$cargo_bin" \
+cargo_with_runtime_patch \
   --config "$management_source_patch" \
   --config "$authentication_source_patch" \
   --config "$access_control_source_patch" \
   package --quiet "${plugin_package_flags[@]}" --no-verify \
-  -p lenso-service-account-postgres-plugin
+  -p lenso-service-account-postgres-plugin \
+  --manifest-path "$bootstrap_source/Cargo.toml" --target-dir "$bootstrap_target"
 
 management_archive="$target_directory/package/lenso-capability-service-account-$management_version.crate"
 authentication_archive="$target_directory/package/lenso-capability-service-account-auth-$authentication_version.crate"
-plugin_archive="$target_directory/package/lenso-service-account-postgres-plugin-$plugin_version.crate"
+plugin_archive="$bootstrap_target/package/lenso-service-account-postgres-plugin-$plugin_version.crate"
 
 tar -xzf "$management_archive" -C "$verification_root"
 tar -xzf "$authentication_archive" -C "$verification_root"
@@ -103,22 +118,23 @@ authentication_package_patch="patch.crates-io.lenso-capability-service-account-a
 access_control_package_patch="patch.crates-io.lenso-capability-access-control.path=\"$access_control_package\""
 plugin_manifest="$plugin_package/Cargo.toml"
 
-"$cargo_bin" \
+cargo_with_runtime_patch \
   --config "$management_package_patch" \
   --config "$authentication_package_patch" \
   --config "$access_control_package_patch" \
   generate-lockfile --manifest-path "$plugin_manifest"
-"$cargo_bin" \
+cargo_with_runtime_patch \
   --config "$management_package_patch" \
   --config "$authentication_package_patch" \
   --config "$access_control_package_patch" \
   check --quiet --locked --all-targets --manifest-path "$plugin_manifest"
-"$cargo_bin" \
+cargo_with_runtime_patch \
   --config "$management_package_patch" \
   --config "$authentication_package_patch" \
   --config "$access_control_package_patch" \
   test --quiet --locked --manifest-path "$plugin_manifest"
 "$cargo_bin" clippy \
+  --config "$macro_config" \
   --config "$management_package_patch" \
   --config "$authentication_package_patch" \
   --config "$access_control_package_patch" \

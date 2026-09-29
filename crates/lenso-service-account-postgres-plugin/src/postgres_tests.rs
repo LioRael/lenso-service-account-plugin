@@ -61,6 +61,31 @@ async fn restart_concurrency_and_secret_once_acceptance() {
         CommandClaim::Conflict
     ));
 
+    let command = ServiceAccountOperator::inspect_command(
+        &database_url,
+        SCHEMA,
+        "admin-api",
+        "create",
+        "create-1",
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    assert_eq!(command.status, "reserved");
+    assert!(!command.requires_issuer_reconciliation());
+    assert!(
+        ServiceAccountOperator::inspect_command(
+            &database_url,
+            SCHEMA,
+            "other-caller",
+            "create",
+            "create-1"
+        )
+        .await
+        .unwrap()
+        .is_none()
+    );
+
     let secret = CredentialSecret::generate().expect("credential secret");
     let raw_secret = secret.expose();
     let verifier = secret.verifier(pepper).expect("credential verifier");
@@ -260,6 +285,85 @@ async fn restart_concurrency_and_secret_once_acceptance() {
         !ciphertext
             .windows(winning_secret.len())
             .any(|window| window == winning_secret.as_bytes())
+    );
+
+    // An ambiguous issuer result remains durable across operator reads and replay.
+    assert!(matches!(
+        storage::claim_command(
+            &postgres,
+            "auth-ingress",
+            "exchange_secret",
+            "exchange-unknown",
+            &[9_u8; 32]
+        )
+        .await
+        .unwrap(),
+        CommandClaim::Claimed
+    ));
+    assert!(
+        storage::mark_exchange_issuing(
+            &postgres,
+            "auth-ingress",
+            "exchange-unknown",
+            &winning_credential_id,
+            "sa_acceptance",
+            OffsetDateTime::now_utc()
+        )
+        .await
+        .unwrap()
+        .is_some()
+    );
+    let unknown = ServiceAccountOperator::inspect_command(
+        &database_url,
+        SCHEMA,
+        "auth-ingress",
+        "exchange_secret",
+        "exchange-unknown",
+    )
+    .await
+    .unwrap()
+    .unwrap();
+    assert_eq!(unknown.status, "issuing");
+    assert!(unknown.requires_issuer_reconciliation());
+    assert!(unknown.completed_at.is_none());
+    assert!(!format!("{unknown:?}").contains(&winning_secret));
+    assert!(matches!(
+        storage::claim_command(
+            &postgres,
+            "auth-ingress",
+            "exchange_secret",
+            "exchange-unknown",
+            &[9_u8; 32]
+        )
+        .await
+        .unwrap(),
+        CommandClaim::InProgress
+    ));
+    assert!(
+        storage::mark_exchange_issuing(
+            &postgres,
+            "auth-ingress",
+            "exchange-unknown",
+            &winning_credential_id,
+            "sa_acceptance",
+            OffsetDateTime::now_utc()
+        )
+        .await
+        .unwrap()
+        .is_none()
+    );
+    assert_eq!(
+        ServiceAccountOperator::inspect_command(
+            &database_url,
+            SCHEMA,
+            "auth-ingress",
+            "exchange_secret",
+            "exchange-unknown"
+        )
+        .await
+        .unwrap()
+        .unwrap(),
+        unknown
     );
 
     // Revocation locks the account and all credentials before a pending exchange may issue.

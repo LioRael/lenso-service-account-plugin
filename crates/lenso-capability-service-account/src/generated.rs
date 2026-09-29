@@ -3,13 +3,16 @@ use std::{fmt, rc::Rc};
 use futures::future::LocalBoxFuture;
 use lenso_kernel::{InvocationContext, NativeRequestEndpoint, NativeRequestFuture, NativeRequestHandle, PluginDependencies, RequestCapability, RuntimeFailure};
 
-use lenso_plugin_authoring::{BoundCapabilityClient, CapabilityClient, CapabilityClientMany};
+use lenso_plugin_authoring::{BoundCapabilityClient, CapabilityClient, CapabilityClientMany, CapabilityReference};
 pub const CAPABILITY_ID: &str = "lenso.service-account@1";
 pub const DESCRIPTOR_VERSION: &str = "1.0.0";
+pub const DESCRIPTOR_DIGEST: &str = "sha256:1f3b9acc2fa6f8b14149c9ba9f583bd498585cbd9fb112f7dd94ff8c3e6ce229";
 pub const PORTABLE: bool = true;
 pub const CROSS_LANE_TRANSFER: bool = true;
 pub const SERVICE_ACCOUNT_CAPABILITY_ID: &str = CAPABILITY_ID;
 pub const SERVICE_ACCOUNT_DESCRIPTOR_VERSION: &str = DESCRIPTOR_VERSION;
+pub const SERVICE_ACCOUNT_DESCRIPTOR_DIGEST: &str = DESCRIPTOR_DIGEST;
+pub const SERVICE_ACCOUNT_CONTRACT: CapabilityReference<ServiceAccountClient> = CapabilityReference::new(CAPABILITY_ID, DESCRIPTOR_VERSION, DESCRIPTOR_DIGEST);
 
 #[doc(hidden)]
 #[macro_export]
@@ -17,11 +20,23 @@ macro_rules! __lenso_provided_service_account { () => { "{\"capability_id\":\"le
 
 #[doc(hidden)]
 #[macro_export]
-macro_rules! __lenso_required_service_account_client { () => { "{\"capability_id\":\"lenso.service-account@1\",\"descriptor_version\":\"1.0.0\",\"cardinality\":\"one\"}" }; }
+macro_rules! __lenso_required_service_account_client {
+    () => { "{\"capability_id\":\"lenso.service-account@1\",\"descriptor_version\":\"1.0.0\",\"cardinality\":\"one\"}" };
+    ($requirement_id:literal) => { concat!("{\"requirement_id\":", stringify!($requirement_id), ",\"capability_id\":\"lenso.service-account@1\",\"descriptor_version\":\"1.0.0\",\"cardinality\":\"one\"}") };
+}
 
 #[doc(hidden)]
 #[macro_export]
-macro_rules! __lenso_required_many_service_account_client { () => { "{\"capability_id\":\"lenso.service-account@1\",\"descriptor_version\":\"1.0.0\",\"cardinality\":\"many\"}" }; }
+macro_rules! __lenso_required_optional_service_account_client {
+    ($requirement_id:literal) => { concat!("{\"requirement_id\":", stringify!($requirement_id), ",\"capability_id\":\"lenso.service-account@1\",\"descriptor_version\":\"1.0.0\",\"cardinality\":\"optional\"}") };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __lenso_required_many_service_account_client {
+    () => { "{\"capability_id\":\"lenso.service-account@1\",\"descriptor_version\":\"1.0.0\",\"cardinality\":\"many\"}" };
+    ($requirement_id:literal) => { concat!("{\"requirement_id\":", stringify!($requirement_id), ",\"capability_id\":\"lenso.service-account@1\",\"descriptor_version\":\"1.0.0\",\"cardinality\":\"many\"}") };
+}
 
 pub const CREATE_OPERATION: &str = "create";
 pub const GET_OPERATION: &str = "get";
@@ -935,6 +950,101 @@ macro_rules! __lenso_native_lower_service_account {
     };
 }
 
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __lenso_native_lower_object_service_account {
+    ($object:ty, $plugin:ty, $support:path) => {
+        use $support as __LensoNativeSupportServiceAccount;
+        impl $crate::ServiceAccountProvider for $object {
+        fn create(&self, context: __LensoNativeSupportServiceAccount::InvocationContext, request: $crate::CreateServiceAccountRequest) -> __LensoNativeSupportServiceAccount::NativeRequestFuture<$crate::ServiceAccountCreate> {
+            let object = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let plugin = object.get()?;
+                let result = <$plugin>::create(plugin.as_ref(), context, request).await;
+                $crate::__LensoIntoServiceAccountCreateResult::__lenso_into_result(result)
+            })
+        }
+        fn get(&self, context: __LensoNativeSupportServiceAccount::InvocationContext, request: $crate::GetServiceAccountRequest) -> __LensoNativeSupportServiceAccount::NativeRequestFuture<$crate::ServiceAccountGet> {
+            let object = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let plugin = object.get()?;
+                let result = <$plugin>::get(plugin.as_ref(), context, request).await;
+                $crate::__LensoIntoServiceAccountGetResult::__lenso_into_result(result)
+            })
+        }
+        fn list(&self, context: __LensoNativeSupportServiceAccount::InvocationContext, request: $crate::ListServiceAccountsRequest) -> __LensoNativeSupportServiceAccount::NativeRequestFuture<$crate::ServiceAccountList> {
+            let object = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let plugin = object.get()?;
+                let result = <$plugin>::list(plugin.as_ref(), context, request).await;
+                $crate::__LensoIntoServiceAccountListResult::__lenso_into_result(result)
+            })
+        }
+        fn revoke(&self, context: __LensoNativeSupportServiceAccount::InvocationContext, request: $crate::RevokeServiceAccountRequest) -> __LensoNativeSupportServiceAccount::NativeRequestFuture<$crate::ServiceAccountRevoke> {
+            let object = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let plugin = object.get()?;
+                let result = <$plugin>::revoke(plugin.as_ref(), context, request).await;
+                $crate::__LensoIntoServiceAccountRevokeResult::__lenso_into_result(result)
+            })
+        }
+        fn rotate_secret(&self, context: __LensoNativeSupportServiceAccount::InvocationContext, request: $crate::RotateServiceAccountSecretRequest) -> __LensoNativeSupportServiceAccount::NativeRequestFuture<$crate::ServiceAccountRotateSecret> {
+            let object = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let plugin = object.get()?;
+                let result = <$plugin>::rotate_secret(plugin.as_ref(), context, request).await;
+                $crate::__LensoIntoServiceAccountRotateSecretResult::__lenso_into_result(result)
+            })
+        }
+        }
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __lenso_native_lower_trait_object_service_account {
+    ($object:ty, $plugin:ty, $support:path) => {
+        use $support as __LensoNativeSupportServiceAccount;
+        impl $crate::ServiceAccountProvider for $object {
+        fn create(&self, context: __LensoNativeSupportServiceAccount::InvocationContext, request: $crate::CreateServiceAccountRequest) -> __LensoNativeSupportServiceAccount::NativeRequestFuture<$crate::ServiceAccountCreate> {
+            let object = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let plugin = object.get()?;
+                <$plugin as $crate::ServiceAccountProvider>::create(plugin.as_ref(), context, request).await
+            })
+        }
+        fn get(&self, context: __LensoNativeSupportServiceAccount::InvocationContext, request: $crate::GetServiceAccountRequest) -> __LensoNativeSupportServiceAccount::NativeRequestFuture<$crate::ServiceAccountGet> {
+            let object = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let plugin = object.get()?;
+                <$plugin as $crate::ServiceAccountProvider>::get(plugin.as_ref(), context, request).await
+            })
+        }
+        fn list(&self, context: __LensoNativeSupportServiceAccount::InvocationContext, request: $crate::ListServiceAccountsRequest) -> __LensoNativeSupportServiceAccount::NativeRequestFuture<$crate::ServiceAccountList> {
+            let object = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let plugin = object.get()?;
+                <$plugin as $crate::ServiceAccountProvider>::list(plugin.as_ref(), context, request).await
+            })
+        }
+        fn revoke(&self, context: __LensoNativeSupportServiceAccount::InvocationContext, request: $crate::RevokeServiceAccountRequest) -> __LensoNativeSupportServiceAccount::NativeRequestFuture<$crate::ServiceAccountRevoke> {
+            let object = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let plugin = object.get()?;
+                <$plugin as $crate::ServiceAccountProvider>::revoke(plugin.as_ref(), context, request).await
+            })
+        }
+        fn rotate_secret(&self, context: __LensoNativeSupportServiceAccount::InvocationContext, request: $crate::RotateServiceAccountSecretRequest) -> __LensoNativeSupportServiceAccount::NativeRequestFuture<$crate::ServiceAccountRotateSecret> {
+            let object = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let plugin = object.get()?;
+                <$plugin as $crate::ServiceAccountProvider>::rotate_secret(plugin.as_ref(), context, request).await
+            })
+        }
+        }
+    };
+}
+
 #[derive(Debug)]
 struct ServiceAccountRequestEndpoint { provider: Rc<dyn ServiceAccountProvider> }
 
@@ -1061,7 +1171,7 @@ macro_rules! __lenso_native_provide_service_account {
     }};
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ServiceAccountClient {
     create: NativeRequestHandle<ServiceAccountCreate>,
     get: NativeRequestHandle<ServiceAccountGet>,
@@ -1072,6 +1182,13 @@ pub struct ServiceAccountClient {
 impl ServiceAccountClient {
     pub fn from_dependencies(dependencies: &PluginDependencies) -> Result<Self, RuntimeFailure> {
         <Self as CapabilityClient>::from_dependencies(dependencies)
+    }
+
+    pub fn from_requirement(
+        dependencies: &PluginDependencies,
+        requirement_id: &str,
+    ) -> Result<Self, RuntimeFailure> {
+        <Self as CapabilityClient>::from_requirement(dependencies, requirement_id)
     }
 
     pub async fn create(&self, request: CreateServiceAccountRequest) -> Result<CreateServiceAccountResponse, ServiceAccountCreateInvocationError> {
@@ -1152,6 +1269,14 @@ impl CapabilityClient for ServiceAccountClient {
         })
     }
 
+    fn from_requirement(
+        dependencies: &PluginDependencies,
+        requirement_id: &str,
+    ) -> Result<Self, RuntimeFailure> {
+        let dependencies = dependencies.requirement(requirement_id)?;
+        Self::from_dependencies(&dependencies)
+    }
+
     fn already_connected() -> RuntimeFailure {
         RuntimeFailure::PluginFailure {
             detail: format!("Capability Port {CAPABILITY_ID} was connected more than once"),
@@ -1180,6 +1305,14 @@ impl CapabilityClientMany for ServiceAccountClient {
                 ))
             })
             .collect()
+    }
+
+    fn many_from_requirement(
+        dependencies: &PluginDependencies,
+        requirement_id: &str,
+    ) -> Result<Vec<BoundCapabilityClient<Self>>, RuntimeFailure> {
+        let dependencies = dependencies.requirement(requirement_id)?;
+        Self::many_from_dependencies(&dependencies)
     }
 }
 
