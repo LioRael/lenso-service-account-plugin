@@ -1,0 +1,45 @@
+.github/workflows/ci.yml
+  s_f4202e28c6b5b1::t_188e2dcd9d7bb4 5-6,37
+Cargo.lock
+  s_7d146975368699::t_55e54ea9f3cfe8 40-48,834,836,848,850,859,861,875,877,889,891,895,906,908,912,923,925,929,940,942,954,956,972,987,1020,1022,1025,1028-1041,1046,1048,1058,1060,1066-1076,1079,1081,1088,1095-1096,1108,1110,1114,1116,1118,1125,1127,1441-1469
+Cargo.toml
+  s_f4202e28c6b5b1::t_28e4c12eb9249b 21-27,29-34,56-58
+crates/lenso-capability-service-account-auth/src/generated.rs
+  s_f4202e28c6b5b1::t_dd89d86a9d680e 6,9,14-15,23-32,36-39,253-287,358,371-377,404-411,437-444
+crates/lenso-capability-service-account/src/generated.rs
+  s_f4202e28c6b5b1::t_9e49c3a3610577 6,9,14-15,23-32,36-39,953-1047,1174,1187-1193,1272-1279,1309-1316
+crates/lenso-service-account-postgres-plugin/src/lib.rs
+  s_f4202e28c6b5b1::t_a3bb969aa1f74e 37-39,142-154,254-258,444-459,462
+crates/lenso-service-account-postgres-plugin/src/operator.rs
+  s_f4202e28c6b5b1::t_64354807e59049 2,4,11-26,28-59,83-86
+crates/lenso-service-account-postgres-plugin/src/postgres_tests.rs
+  s_f4202e28c6b5b1::t_345677cf78dc8b 64-88,290-368
+docs/management-security.md
+  s_f4202e28c6b5b1::t_f29da92211d10e 1-41
+scripts/check-public-packages.sh
+  s_f4202e28c6b5b1::t_6a36913c2c8558 19-27,36,39,53-59,66,70,89,94-95,99,121,126,131,137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2f943361414596adbae54060f33e406f77c0f091",
+  "prompts": {},
+  "sessions": {
+    "s_7d146975368699": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0c54a-381f-7362-9b4d-95aea89e2437",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "LioRael <leo@lenso.dev>"
+    },
+    "s_f4202e28c6b5b1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ee9e-623b-7d12-a648-d8b462390eec",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "LioRael <leo@lenso.dev>"
+    }
+  }
+}
