@@ -1,0 +1,18 @@
+# Manual, exact Owner cohort; other packages are never processed.
+[workspace]
+release = false
+release_always = true
+changelog_update = false
+git_tag_name = "{{ package }}@{{ version }}"
+
+[[package]]
+name = "lenso-capability-service-account"
+release = true
+
+[[package]]
+name = "lenso-capability-service-account-auth"
+release = true
+
+[[package]]
+name = "lenso-service-account-postgres-plugin"
+release = true

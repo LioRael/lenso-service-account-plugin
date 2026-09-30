@@ -29,6 +29,8 @@ jobs:
         with:
           toolchain: 1.94.0
           components: rustfmt,clippy
+      - name: Verify manual release guards
+        run: bash .github/scripts/test-release-scripts.sh
       - run: cargo fmt --all -- --check
       - run: cargo check --locked --workspace --all-targets
       - run: cargo test --locked --workspace --all-targets

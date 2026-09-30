@@ -1,0 +1,20 @@
+{
+  "repository": "LioRael/lenso-service-account-plugin",
+  "required_jobs": [
+    "check"
+  ],
+  "packages": [
+    {
+      "package_name": "lenso-capability-service-account",
+      "version": "0.1.1"
+    },
+    {
+      "package_name": "lenso-capability-service-account-auth",
+      "version": "0.1.1"
+    },
+    {
+      "package_name": "lenso-service-account-postgres-plugin",
+      "version": "0.1.1"
+    }
+  ]
+}

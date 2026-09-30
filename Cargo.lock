@@ -963,7 +963,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-capability-service-account"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures",
  "lenso-contract-authoring",
@@ -978,7 +978,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-capability-service-account-auth"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures",
  "lenso-contract-authoring",
@@ -1128,7 +1128,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-service-account-postgres-plugin"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aes-gcm",
  "argon2",
