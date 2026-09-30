@@ -1,0 +1,52 @@
+crates/lenso-capability-service-account/Cargo.toml
+  s_f4202e28c6b5b1::t_5da3197237cd2e 3
+crates/lenso-service-account-postgres-plugin/Cargo.toml
+  s_f4202e28c6b5b1::t_5da3197237cd2e 3,26-27
+docs/release-process.md
+  s_f4202e28c6b5b1::t_5da3197237cd2e 5-7,11-22,29-49,52-54,93-94
+  s_f4202e28c6b5b1::t_00f0cc93c4f643 95
+crates/lenso-capability-service-account-auth/Cargo.toml
+  s_f4202e28c6b5b1::t_5da3197237cd2e 3
+.github/release-owner.toml
+  s_f4202e28c6b5b1::t_7a42f0ff6ee894 1-18
+.github/scripts/release-archives.py
+  s_f4202e28c6b5b1::t_d2798cc5c4d337 1-45
+.github/scripts/release-gate.sh
+  s_f4202e28c6b5b1::t_48a8a520375802 1-66
+.github/scripts/release-plan.sh
+  s_f4202e28c6b5b1::t_2021d4224252da 1-37
+.github/scripts/release-policy.json
+  s_f4202e28c6b5b1::t_adb4c49562e27c 1-20
+.github/scripts/release-postcondition.sh
+  s_f4202e28c6b5b1::t_f1da7d78c8bac8 1-134
+.github/scripts/release-preflight.sh
+  s_f4202e28c6b5b1::t_0cdcf4d166bc00 1-11
+.github/scripts/release-set.sh
+  s_f4202e28c6b5b1::t_9693bf1b9f38fd 1-49
+.github/scripts/test-release-archives.py
+  s_f4202e28c6b5b1::t_5c698b09075974 1-44
+.github/scripts/test-release-scripts.sh
+  s_f4202e28c6b5b1::t_af0c4908551185 1-108
+.github/workflows/ci.yml
+  s_f4202e28c6b5b1::t_3c49cb05228039 32-33
+.github/workflows/release-plz.yml
+  s_f4202e28c6b5b1::t_5f988359d31607 6-7,9-13,16-31,40-42,46,48-55,57,59,62,65-70,74-75,77,79-81,83-86,90,93-100,102,104-115,118-122,124-127
+Cargo.lock
+  s_f4202e28c6b5b1::t_73e820ca59f9e0 966,981,1131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bff3c4ea669bdc55b0fdef5321fc9cf96b602a9b",
+  "prompts": {},
+  "sessions": {
+    "s_f4202e28c6b5b1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ee9e-623b-7d12-a648-d8b462390eec",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "LioRael <leo@lenso.dev>"
+    }
+  }
+}
