@@ -19,17 +19,17 @@ trap cleanup EXIT
 macro_config="$verification_root/native-macro-candidate.toml"
 cat > "$macro_config" <<'TOML'
 [patch.crates-io]
-lenso = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
-lenso-app-plan = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
-lenso-kernel = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
-lenso-native-adapter = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
-lenso-native-adapter-macros = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
-lenso-plugin-authoring = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
-lenso-runtime-codec = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
-lenso-contract-runtime = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
-lenso-contract-authoring = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
-lenso-contract-authoring-macros = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
-lenso-contract-codegen = { git = "https://github.com/LioRael/lenso", rev = "1dbc6b441ccc5571e2349ab4ae6e23a072a9093e" }
+lenso = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
+lenso-app-plan = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
+lenso-kernel = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
+lenso-native-adapter = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
+lenso-native-adapter-macros = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
+lenso-plugin-authoring = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
+lenso-runtime-codec = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
+lenso-contract-runtime = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
+lenso-contract-authoring = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
+lenso-contract-authoring-macros = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
+lenso-contract-codegen = { git = "https://github.com/LioRael/lenso", rev = "cac6db9d3293197754cce0ec707e909e0bed79a6" }
 TOML
 cargo_with_runtime_patch() {
   "$cargo_bin" --config "$macro_config" "$@"
@@ -67,35 +67,37 @@ cp "$repository_root/Cargo.toml" "$repository_root/Cargo.lock" "$bootstrap_sourc
 cp -R "$repository_root/crates" "$bootstrap_source/crates"
 management_source="$bootstrap_source/crates/lenso-capability-service-account"
 authentication_source="$bootstrap_source/crates/lenso-capability-service-account-auth"
-access_control_source="${LENSO_ACCESS_CONTROL_SOURCE:-}"
-if [[ -z "$access_control_source" ]]; then
-  access_control_checkout="$verification_root/access-control"
-  git clone --quiet --filter=blob:none --no-checkout \
-    https://github.com/LioRael/lenso-access-control-plugin "$access_control_checkout"
-  git -C "$access_control_checkout" checkout --quiet --detach \
-    62ed6b9a100242e6932a46cb369b21f1c26ab765
-  access_control_source="$access_control_checkout/crates/lenso-capability-access-control"
-fi
-access_control_root="$(git -C "$access_control_source" rev-parse --show-toplevel)"
-access_control_metadata="$(cargo_with_runtime_patch metadata --manifest-path "$access_control_root/Cargo.toml" --no-deps --format-version=1)"
-access_control_target="$(python3 -c \
-  'import json, sys; print(json.load(sys.stdin)["target_directory"])' \
-  <<<"$access_control_metadata")"
-access_control_version="$(python3 -c \
-  'import json, sys; name = sys.argv[1]; print(next(package["version"] for package in json.load(sys.stdin)["packages"] if package["name"] == name))' \
-  lenso-capability-access-control <<<"$access_control_metadata")"
-"$cargo_bin" package --quiet --locked \
-  --manifest-path "$access_control_root/Cargo.toml" \
-  -p lenso-capability-access-control
-access_control_archive="$access_control_target/package/lenso-capability-access-control-$access_control_version.crate"
+access_control_version="0.2.0"
+access_control_archive="$verification_root/lenso-capability-access-control-$access_control_version.crate"
+# Reuse the immutable registered dependency rather than repacking another
+# repository's unchanged Role under the same published name and version.
+python3 - "$access_control_archive" "$access_control_version" <<'PY'
+import hashlib
+import json
+from pathlib import Path
+import sys
+from urllib.request import urlopen
+
+name = "lenso-capability-access-control"
+version = sys.argv[2]
+with urlopen(f"https://index.crates.io/le/ns/{name}", timeout=60) as response:
+    entries = response.read(2 * 1024 * 1024).decode().splitlines()
+entry = next(json.loads(line) for line in entries if json.loads(line)["vers"] == version)
+with urlopen(f"https://static.crates.io/crates/{name}/{name}-{version}.crate", timeout=60) as response:
+    archive = response.read(8 * 1024 * 1024)
+if hashlib.sha256(archive).hexdigest() != entry["cksum"]:
+    raise SystemExit("Access Control registry archive checksum mismatch")
+Path(sys.argv[1]).write_bytes(archive)
+PY
+tar -xzf "$access_control_archive" -C "$verification_root"
+access_control_source="$verification_root/lenso-capability-access-control-$access_control_version"
 management_source_patch="patch.crates-io.lenso-capability-service-account.path=\"$management_source\""
 authentication_source_patch="patch.crates-io.lenso-capability-service-account-auth.path=\"$authentication_source\""
 access_control_source_patch="patch.crates-io.lenso-capability-access-control.path=\"$access_control_source\""
 
-# Cargo must resolve both unpublished local Capabilities and the not-yet-published
-# Access Control Capability while creating the Plugin archive. This bootstrap
-# step intentionally regenerates only the archive-local lockfile; the normalized
-# consumer graph is fully checked, tested, and linted below.
+# Cargo must resolve the unpublished local Capabilities while creating the
+# Plugin archive. This bootstrap step regenerates only the archive-local
+# lockfile; the normalized consumer graph is checked, tested, and linted below.
 cargo_with_runtime_patch \
   --config "$management_source_patch" \
   --config "$authentication_source_patch" \
@@ -110,7 +112,6 @@ plugin_archive="$bootstrap_target/package/lenso-service-account-postgres-plugin-
 
 tar -xzf "$management_archive" -C "$verification_root"
 tar -xzf "$authentication_archive" -C "$verification_root"
-tar -xzf "$access_control_archive" -C "$verification_root"
 tar -xzf "$plugin_archive" -C "$verification_root"
 
 management_package="$verification_root/lenso-capability-service-account-$management_version"

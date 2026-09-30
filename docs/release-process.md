@@ -11,10 +11,10 @@ from a clean, reviewed `main` checkout through
 `.github/workflows/release-plz.yml`. Pushes to `main` may refresh a Release-plz
 PR; merging that PR does not itself publish.
 
-`lenso-capability-access-control` 0.1.0 is also a registry prerequisite. Until
-that dependency is published, the package gate builds its exact pinned source
-archive and uses the normalized archive as a temporary consumer patch; this is
-validation only and does not change publication order.
+`lenso-capability-access-control` 0.2.0 is an immutable registered dependency.
+The package gate verifies its downloaded archive against the primary sparse
+index checksum and reuses its normalized manifest. It does not repackage the
+Access Control repository under an already published version.
 
 ## Trusted Publisher configuration
 
@@ -54,6 +54,12 @@ The package check verifies both Capability archives, creates the Plugin archive
 with temporary source patches for the as-yet-unpublished Capability versions,
 then regenerates and verifies the exact consumer dependency graph from the
 normalized archives.
+
+The current source cohort also supplies the paired Core SDK dependencies at
+`cac6db9d3293197754cce0ec707e909e0bed79a6`. Archive verification retains that
+explicit source patch. It proves the source archives with this SDK cohort;
+registry-only consumer verification and publication still require the matching
+Core package versions to be published separately.
 
 Run real PostgreSQL acceptance before publication:
 
