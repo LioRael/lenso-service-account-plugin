@@ -1,0 +1,28 @@
+docs/release-process.md
+  s_f4202e28c6b5b1::t_4d3f1c923edfb2 14-17,58-62
+  s_f4202e28c6b5b1::t_5a8caf87fd2db0 63
+.github/workflows/ci.yml
+  s_f4202e28c6b5b1::t_7e36346bd37d32 37-40
+scripts/check-public-packages.sh
+  s_f4202e28c6b5b1::t_4d3f1c923edfb2 22-32,70-93,98-100
+Cargo.lock
+  s_f4202e28c6b5b1::t_fd6c9d16dccfdf 834-835,848,970,985,996-997,1006-1007,1029-1030,1042,1052-1053,1072-1073,1087-1088,1101,1116-1117
+Cargo.toml
+  s_f4202e28c6b5b1::t_7f43ee00dd99b1 21,28-29,31-32,58-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6f4d4d158a70cbde2f9d6d46cf45cfb64a2afce0",
+  "prompts": {},
+  "sessions": {
+    "s_f4202e28c6b5b1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ee9e-623b-7d12-a648-d8b462390eec",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "LioRael <leo@lenso.dev>"
+    }
+  }
+}
